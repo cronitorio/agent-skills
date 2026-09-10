@@ -43,15 +43,16 @@ If a request contains several of these tasks, follow only the recipes needed for
 
 ## Connect Cronitor
 
-Use Cronitor's hosted MCP server for account discovery and resource management:
+Pick the connection path in this order and do not ask the human to choose between options that are not available to them:
 
-```text
-https://cronitor.io/mcp
-```
+1. **Already connected.** If Cronitor MCP tools are present in your session, use them. Read the published tool schemas and make one read-only call.
+2. **Your client supports MCP** (Claude Code, Claude, Cursor, Codex, VS Code, or another Streamable HTTP client). Add the server `https://cronitor.io/mcp` using the exact steps for that client in [Connect your MCP client](https://cronitor.io/docs/mcp-server.md#connect-your-mcp-client), then let the human complete sign-in and consent in the browser. The connection follows the Cronitor organization they are signed in to. Prefer this path: it needs no key handling.
+3. **No MCP support, but you have a shell.** Use [CronitorCLI](https://cronitor.io/docs/using-cronitor-cli.md). If `cronitor status` already succeeds, you are connected. If the CLI is missing or unconfigured, tell the human what installing it does (the install script runs with `sudo`) and ask before installing. After approval, install it and have the human provide the SDK Integration key through an environment variable or `cronitor configure`, never pasted into the conversation. Where the key lives is described in the MCP doc's [SDK Integration key section](https://cronitor.io/docs/mcp-server.md#use-the-existing-sdk-integration-key).
+4. **Neither is possible.** Report `blocked`, link the client setup section, and continue any repository-only work. Do not fall back to a credential pasted in chat.
 
-If the server is already connected, inspect its published tool schemas and make a read-only call. Otherwise, follow the exact instructions for the human's client in [Connect your MCP client](https://cronitor.io/docs/mcp-server.md#connect-your-mcp-client). Let the human complete sign-in and consent in the browser; the connection follows the Cronitor organization they are currently signed in to. Do not ask the human to paste an OAuth token, API key, ping key, or password into the conversation.
+Never ask the human to paste an OAuth token, API key, ping key, or password into the conversation.
 
-Confirm the selected organization with a compact inventory:
+Once connected, confirm the organization with a compact inventory:
 
 ```text
 get_status({})
@@ -60,11 +61,7 @@ list_notification_lists({})
 list_monitors({"page_size": 25})
 ```
 
-Request summary fields first and paginate only when the task needs the remaining resources.
-
-### Without MCP
-
-If no MCP server is connected but [CronitorCLI](https://cronitor.io/docs/using-cronitor-cli.md) or an API key is available, use them. The CLI and the [REST API](https://cronitor.io/docs/api.md) expose the same resources as the MCP tools. The discovery calls above become:
+Over CronitorCLI the same discovery is:
 
 ```bash
 cronitor status
@@ -73,11 +70,11 @@ cronitor environment list
 cronitor notification list
 ```
 
-Provide the API key through an environment variable or secret injector, never as a literal argument. Where the key comes from and how to inject it safely is described in the MCP doc's [SDK Integration key section](https://cronitor.io/docs/mcp-server.md#use-the-existing-sdk-integration-key).
+The CLI and the [REST API](https://cronitor.io/docs/api.md) expose the same resources as the MCP tools. Request summary fields first and paginate only when the task needs the remaining resources.
 
 **Done when:** a read-only call succeeds and the organization is unambiguous.
 
-**If blocked:** fall back to CronitorCLI or the REST API when either is available. Otherwise link the relevant client setup section, report `blocked`, and state that remote account inspection or changes remain incomplete. Do not silently fall back to a credential pasted in chat.
+**If blocked:** report `blocked`, name the path you tried and why it failed, and state that remote account inspection or changes remain incomplete.
 
 ## Audit monitoring
 
@@ -224,7 +221,7 @@ setup_monitor({
 })
 ```
 
-Cronitor performs the probe, so no runtime ping is required. Read the monitor back and observe one successful real probe. For MCP endpoints, use the documented [MCP check preset](https://cronitor.io/guides/monitor-mcp-servers).
+Cronitor performs the probe, so no runtime ping is required. Read the monitor back and observe one successful real probe. For MCP endpoints, use the request shape in the [MCP monitoring guide](https://cronitor.io/guides/monitor-mcp-servers).
 
 Use the integration native to the real execution boundary. See [SDKs and integrations](https://cronitor.io/docs/sdks.md), [safe Kubernetes rollout](https://cronitor.io/guides/monitoring-kubernetes-cron-jobs#safe-agent-rollout), and the [Cronitor GitHub Action](https://github.com/cronitorio/monitor-github-actions). Reuse the repository's package manager and lockfile, preserve return values and exit status, and do not enable automatic discovery beyond the approved scope.
 
@@ -241,7 +238,7 @@ Creating a notification destination requires explicit approval. Discover first, 
 3. Slack or PagerDuty: `connect_integration({"service": "slack"})`, hand over `authorize_url`, then `check_integration_connection({"token": "…"})`. Do not open the URL yourself.
 4. Attach by label: first `get_notification_list({"key": "default"})`. Merge the new destination into the existing `notifications` map — do not replace the map, or omitted channels are cleared. Then `update_notification_list({"key": "default", "notifications": <merged>})` and `get_notification_list({"key": "default"})` again.
 
-Read [Integrations](https://cronitor.io/docs/integrations.md) and [hosted MCP integrations](https://cronitor.io/docs/mcp-server.md#integrations). Do not ask the human to paste provider tokens or webhook secrets into the conversation.
+Read [Integrations](https://cronitor.io/docs/integrations.md) and [MCP server integrations](https://cronitor.io/docs/mcp-server.md#integrations). Do not ask the human to paste provider tokens or webhook secrets into the conversation.
 
 **Done when:** the connect status is `complete` (or the key-based create succeeded) and the notification list reads back the label.
 

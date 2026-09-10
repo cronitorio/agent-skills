@@ -16,7 +16,12 @@ section() {
 # Portable recursive file finder that prunes bulky directories.
 find_files() {
   # $1: -name pattern (may contain shell wildcards, quoted by caller)
-  find "$ROOT" \( $PRUNE \) -prune -o -type f -name "$1" -print 2>/dev/null
+  find "$ROOT" \( $PRUNE \) -prune -o -type f -name "$1" -print0 2>/dev/null
+}
+
+# Same, one path per line, for plain listings.
+list_files() {
+  find_files "$1" | tr '\0' '\n'
 }
 
 echo "Scheduled work inventory (root: $ROOT, host: $(hostname 2>/dev/null || echo unknown))"
@@ -60,7 +65,7 @@ done
 
 # 3. Kubernetes CronJob manifests
 section "Kubernetes CronJob manifests"
-k8s=$( { find_files '*.yaml'; find_files '*.yml'; } | xargs grep -l 'kind: *CronJob' 2>/dev/null)
+k8s=$( { find_files '*.yaml'; find_files '*.yml'; } | xargs -0 grep -I -l 'kind: *CronJob' 2>/dev/null)
 if [ -n "$k8s" ]; then
   echo "$k8s" | while IFS= read -r f; do
     names=$(grep -E '^\s*name:' "$f" 2>/dev/null | head -n 1 | sed 's/^[[:space:]]*//')
@@ -89,15 +94,15 @@ fi
 
 # 5. Celery beat schedules
 section "Celery beat (beat_schedule / CELERYBEAT_SCHEDULE / crontab())"
-celery=$(find_files '*.py' | xargs grep -l -E 'beat_schedule|CELERYBEAT_SCHEDULE|celery\.schedules' 2>/dev/null)
+celery=$(find_files '*.py' | xargs -0 grep -I -l -E 'beat_schedule|CELERYBEAT_SCHEDULE|celery\.schedules' 2>/dev/null)
 if [ -n "$celery" ]; then echo "$celery"; else echo "(none found)"; fi
 
 # 6. Sidekiq-cron / sidekiq-scheduler and whenever (Ruby)
 section "Sidekiq-cron, sidekiq-scheduler, and whenever (Ruby)"
 ruby=$( {
-  find_files 'sidekiq.yml'; find_files 'sidekiq_cron.yml'; find_files 'sidekiq_scheduler.yml'; find_files 'schedule.yml'; find_files 'schedule.rb'
+  list_files 'sidekiq.yml'; list_files 'sidekiq_cron.yml'; list_files 'sidekiq_scheduler.yml'; list_files 'schedule.yml'; list_files 'schedule.rb'
 } | sort -u)
-ruby_code=$(find_files '*.rb' | xargs grep -l -E 'Sidekiq::Cron|Sidekiq-Cron|sidekiq-scheduler' 2>/dev/null)
+ruby_code=$(find_files '*.rb' | xargs -0 grep -I -l -E 'Sidekiq::Cron|Sidekiq-Cron|sidekiq-scheduler' 2>/dev/null)
 if [ -n "$ruby$ruby_code" ]; then
   [ -n "$ruby" ] && echo "$ruby"
   [ -n "$ruby_code" ] && echo "$ruby_code"
@@ -107,7 +112,7 @@ fi
 
 # 7. systemd timers (repo and host)
 section "systemd timer units"
-timers=$(find_files '*.timer')
+timers=$(list_files '*.timer')
 if [ -d /etc/systemd/system ]; then
   host_timers=$(ls /etc/systemd/system/*.timer 2>/dev/null)
   timers="$timers
@@ -125,18 +130,18 @@ if [ -n "$timers" ]; then echo "$timers"; else echo "(none found)"; fi
 # 8. Other common scheduler definitions by filename or content
 section "Other scheduler hints"
 other=$( {
-  find_files 'crontab'; find_files '*.cron'; find_files 'Procfile'
-  find_files '*.py' | xargs grep -l -E 'APScheduler|BackgroundScheduler|schedule\.every\(' 2>/dev/null
-  find_files '*.js' | xargs grep -l -E 'node-cron|cron\.schedule\(|new CronJob\(' 2>/dev/null
-  find_files '*.ts' | xargs grep -l -E 'node-cron|cron\.schedule\(|@Cron\(' 2>/dev/null
-  find_files '*.php' | xargs grep -l -E '->cron\(|->daily\(|->hourly\(|->everyMinute\(' 2>/dev/null
+  list_files 'crontab'; list_files '*.cron'; list_files 'Procfile'
+  find_files '*.py' | xargs -0 grep -I -l -E 'APScheduler|BackgroundScheduler|schedule\.every\(' 2>/dev/null
+  find_files '*.js' | xargs -0 grep -I -l -E 'node-cron|cron\.schedule\(|new CronJob\(' 2>/dev/null
+  find_files '*.ts' | xargs -0 grep -I -l -E 'node-cron|cron\.schedule\(|@Cron\(' 2>/dev/null
+  find_files '*.php' | xargs -0 grep -I -l -E '->cron\(|->daily\(|->hourly\(|->everyMinute\(' 2>/dev/null
 } | sort -u)
 if [ -n "$other" ]; then echo "$other"; else echo "(none found)"; fi
 
 # 9. Existing Cronitor integration points
 section "Existing Cronitor references"
 cron_refs=$( {
-  find_files '*' | xargs grep -l -E 'cronitor exec|cronitor ping|cronitor\.link|CRONITOR_API_KEY|CRONITOR_PING_API_KEY|import cronitor|require\(.cronitor|cronitorio/' 2>/dev/null
+  find_files '*' | xargs -0 grep -I -l -E 'cronitor exec|cronitor ping|cronitor\.link|CRONITOR_API_KEY|CRONITOR_PING_API_KEY|import cronitor|require\(.cronitor|cronitorio/' 2>/dev/null
 } | sort -u | head -n 50)
 if [ -n "$cron_refs" ]; then echo "$cron_refs"; else echo "(none found)"; fi
 

@@ -1,6 +1,6 @@
 ---
 name: cronitor
-description: Connect, audit, add, investigate, query, and change Cronitor monitoring for cron jobs, background workers, heartbeats, websites, APIs, and MCP servers through the hosted Cronitor MCP server, CronitorCLI, or the REST API. Use when a human mentions Cronitor, asks whether scheduled jobs or endpoints are monitored, wants alerts when a job fails or a site goes down, asks why a monitor is failing, wants failure counts or duration trends, or asks to change monitor, alert, status page, or environment configuration. Includes task recipes, a tool reference, CLI and REST equivalents, the monitor YAML format, and scripts that check the connection path and inventory scheduled work.
+description: Connect, audit, add, investigate, query, and change Cronitor monitoring for cron jobs, background workers, heartbeats, websites, APIs, and MCP servers through the Cronitor MCP server, CronitorCLI, or the REST API. Use when a human mentions Cronitor, asks whether scheduled jobs or endpoints are monitored, wants alerts when a job fails or a site goes down, asks why a monitor is failing, wants failure counts or duration trends, or asks to change monitor, alert, status page, or environment configuration. Includes task recipes, a tool reference, CLI and REST equivalents, the monitor YAML format, and scripts that check the connection path and inventory scheduled work.
 license: MIT
 metadata:
   version: "1.0.0"
@@ -52,11 +52,12 @@ Follow only the recipes the request needs. A specific instruction to implement a
 
 Run `scripts/doctor.sh` first. It reports, without printing secrets, whether the `cronitor` CLI is installed, whether `CRONITOR_API_KEY` is set, whether https://cronitor.io/mcp is reachable, and which path to use. Then pick the first path that is available:
 
-1. **Hosted MCP server** at `https://cronitor.io/mcp`. If it is already connected, inspect its tool schemas and make a read-only call. Otherwise send the human to the client-specific steps at https://cronitor.io/docs/mcp-server.md#connect-your-mcp-client and let them complete OAuth in the browser.
-2. **CronitorCLI** when `cronitor` is installed and `CRONITOR_API_KEY` is set. `references/cli-equivalents.md` maps each MCP tool to its CLI command.
-3. **REST API** when only an API key is available. Send it as HTTP Basic auth username against `https://cronitor.io/api/...`; the same reference lists endpoints.
+1. **Already connected.** Cronitor MCP tools are present in the session: read their schemas and make one read-only call.
+2. **The client supports MCP** (Claude Code, Claude, Cursor, Codex, VS Code, other Streamable HTTP clients). Add `https://cronitor.io/mcp` with the client-specific steps at https://cronitor.io/docs/mcp-server.md#connect-your-mcp-client and let the human complete sign-in in the browser. Prefer this path: no key handling.
+3. **No MCP support, but a shell.** CronitorCLI. If `cronitor status` succeeds you are connected. If the CLI is missing or unconfigured, explain that the install script runs with `sudo` and ask before installing; afterwards the human supplies the SDK Integration key through an environment variable or `cronitor configure`. `references/cli-equivalents.md` maps each MCP tool to its CLI command.
+4. **Only an API key.** The REST API: send the key as the HTTP Basic auth username against `https://cronitor.io/api/...`; the same reference lists endpoints.
 
-Never ask the human to paste an OAuth token, API key, ping key, or password into the conversation. If none of the three paths is available, report `blocked` and say what remains incomplete.
+Never ask the human to paste an OAuth token, API key, ping key, or password into the conversation. If none of these paths is available, report `blocked` and say what remains incomplete.
 
 ## Connect Cronitor
 

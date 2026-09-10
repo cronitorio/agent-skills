@@ -26,4 +26,4 @@ Claude Code users can instead copy this folder to `~/.claude/skills/cronitor` (u
 
 ## Keeping it current
 
-The recipes are maintained in the Cronitor documentation and copied here verbatim; `references/mcp-tools.md` is regenerated from the MCP tool registry whenever tools change. Publish a new version by bumping `metadata.version` in `SKILL.md` and pushing this folder to the public repository.
+The recipes are maintained in the Cronitor documentation and `references/recipes.md` is a copy of them; `references/mcp-tools.md` is rendered from the MCP tool registry. Regenerate both with `./bin/dev-manage render_agent_skill`; a unit test fails when either is stale. A GitHub Action publishes this folder to the public repository whenever it changes on master. Bump `metadata.version` in `SKILL.md` when the skill's behavior changes.
