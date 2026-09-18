@@ -61,22 +61,29 @@ echo "----------------"
 if [ "$mcp_ok" -eq 1 ]; then
   echo "1. Hosted MCP server at $MCP_URL if your client already has it connected."
   echo "   Otherwise follow https://cronitor.io/docs/mcp-server.md#connect-your-mcp-client"
-  echo "   and let the human complete OAuth in the browser."
+  echo "   and let the human sign in or create an account in the browser."
 fi
 if [ "$cli_ok" -eq 1 ] && [ "$key_ok" -eq 1 ]; then
-  echo "2. CronitorCLI is installed and CRONITOR_API_KEY is set: 'cronitor status',"
-  echo "   'cronitor monitor list', and the other resource commands will work."
+  echo "2. CronitorCLI is installed and CRONITOR_API_KEY is set. Verify access with"
+  echo "   'cronitor monitor list'; key presence alone does not prove it is valid."
 elif [ "$cli_ok" -eq 1 ]; then
-  echo "2. CronitorCLI is installed but CRONITOR_API_KEY is not set. Ask the human to"
-  echo "   inject the SDK Integration key into the environment; do not paste it in chat."
+  echo "2. CronitorCLI may already have a saved credential even though the environment"
+  echo "   key is unset. Try 'cronitor monitor list' with the intended config first."
+  echo "   If login is needed, check 'cronitor auth --help' (update older versions),"
+  echo "   choose a writable config, then run 'cronitor auth login --no-browser'."
+  echo "   Keep it running while the human uses the verification URL and user code"
+  echo "   to sign in or create an account. Never request a key or password in chat."
+  echo "   Verify with 'cronitor auth status'. Do not log out as task cleanup."
 elif [ "$key_ok" -eq 1 ]; then
   echo "2. CRONITOR_API_KEY is set but CronitorCLI is not installed. Use the REST API"
   echo "   with HTTP Basic auth (key as username), or install the CLI:"
   echo "   https://cronitor.io/docs/using-cronitor-cli.md#installation"
 fi
 if [ "$mcp_ok" -eq 0 ] && [ "$cli_ok" -eq 0 ] && [ "$key_ok" -eq 0 ]; then
-  echo "No connection path is available. Report 'blocked' and link"
-  echo "https://cronitor.io/docs/agent-quickstart.md#connect-cronitor for the human."
+  echo "No existing connection path was detected. If a shell is available, follow"
+  echo "https://cronitor.io/docs/agent-quickstart.md#connect-cronitor to install the"
+  echo "CLI and start browser login with the human. Report 'blocked' if installation"
+  echo "or browser approval is unavailable; do not ask for credentials in chat."
 fi
 
 exit 0

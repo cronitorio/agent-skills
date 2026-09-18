@@ -2,7 +2,9 @@
 
 The hosted MCP tools, CronitorCLI, and the REST API expose the same account resources. Use whichever path is available (see the connection triage in `SKILL.md`). Sources: https://cronitor.io/docs/using-cronitor-cli.md and https://cronitor.io/docs/api.md.
 
-REST requests use HTTP Basic auth with the API key as the username and an empty password: `curl https://cronitor.io/api/monitors -u "$CRONITOR_API_KEY:"`. Send `Cronitor-Version: 2025-11-28` for the current schema. CronitorCLI reads `CRONITOR_API_KEY` from the environment; never pass a literal key as `--api-key`. The installed command's `cronitor <resource> <operation> --help` is authoritative for its version.
+For interactive CLI setup, use `cronitor auth login --no-browser`: the human signs in or creates an account through the displayed browser URL while the command waits. `cronitor signup` is an alias. Check `cronitor auth status`, then make a read-only resource call. Use the same config path throughout; see `recipes.md#cli-signup-and-login`. Do not log out automatically: `cronitor auth logout` revokes the machine credential and jobs using it stop authenticating.
+
+REST requests use HTTP Basic auth with the API key as the username and an empty password: `curl https://cronitor.io/api/monitors -u "$CRONITOR_API_KEY:"`. Send `Cronitor-Version: 2025-11-28` for the current schema. CronitorCLI reads its saved config or `CRONITOR_API_KEY` from the environment; explicit keys remain useful for CI and containers. Never pass a literal key as `--api-key`. The installed command's `cronitor <resource> <operation> --help` is authoritative for its version.
 
 ## Discovery and status
 

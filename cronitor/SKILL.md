@@ -53,13 +53,15 @@ Follow only the recipes the request needs. A specific instruction to implement a
 Run `scripts/doctor.sh` first. It reports, without printing secrets, whether the `cronitor` CLI is installed, whether `CRONITOR_API_KEY` is set, whether https://cronitor.io/mcp is reachable, and which path to use. Then pick the first path that is available:
 
 1. **Already connected.** Cronitor MCP tools are present in the session: read their schemas and make one read-only call.
-2. **The client supports MCP** (Claude Code, Claude, Cursor, Codex, VS Code, other Streamable HTTP clients). Add `https://cronitor.io/mcp` with the client-specific steps at https://cronitor.io/docs/mcp-server.md#connect-your-mcp-client and let the human complete sign-in in the browser. Prefer this path: no key handling.
-3. **No MCP support, but a shell.** CronitorCLI. If `cronitor status` succeeds you are connected. If the CLI is missing or unconfigured, explain that the install script runs with `sudo` and ask before installing; afterwards the human supplies the SDK Integration key through an environment variable or `cronitor configure`. `references/cli-equivalents.md` maps each MCP tool to its CLI command.
+2. **The client supports MCP** (Claude Code, Claude, Cursor, Codex, VS Code, other Streamable HTTP clients). Add `https://cronitor.io/mcp` with the client-specific steps at https://cronitor.io/docs/mcp-server.md#connect-your-mcp-client and let the human sign in or create an account in the same browser flow. Prefer this path: no key handling.
+3. **No MCP support, but a shell.** Use CronitorCLI. Try `cronitor monitor list` first and reuse working credentials. If installation or an update is needed, explain the change (the install script runs with `sudo`) and obtain approval unless already authorized. Check `cronitor auth --help`; use `cronitor auth login --no-browser` for both signup and login, following `references/recipes.md#cli-signup-and-login`. `cronitor signup` is an alias. Explicit keys supplied through a secret manager remain supported for CI and containers. `references/cli-equivalents.md` maps each MCP tool to its CLI command.
 4. **Only an API key.** The REST API: send the key as the HTTP Basic auth username against `https://cronitor.io/api/...`; the same reference lists endpoints.
 
 Never ask the human to paste an OAuth token, API key, ping key, or password into the conversation. If none of these paths is available, report `blocked` and say what remains incomplete.
 
 ## Connect Cronitor
+
+For CLI login, reuse the intended config or choose a writable config owned by the intended OS user. Explain persistent unattended access before starting. Keep the login process running while the human opens the displayed verification URL, signs in or creates an account, and approves the connection. Share only the verification URL and user code, never device polling codes or tokens. Run `cronitor auth status` after success. Do not replace existing credentials or run `auth logout` as automatic cleanup: logout revokes access for jobs using that key. Read-only users receive telemetry-only CLI credentials; report that limitation when the task needs resource management.
 
 Confirm the selected organization with a compact read-only inventory: `get_status({})`, `list_environments({})`, `list_notification_lists({})`, `list_monitors({"page_size": 25})`. Without MCP, the same calls are `cronitor status`, `cronitor monitor list`, `cronitor environment list`, and `cronitor notification list`. Request summary fields first and paginate only when needed.
 

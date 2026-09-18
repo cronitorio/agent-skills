@@ -18,7 +18,7 @@ Claude Code users can alternatively copy the skill folder into `~/.claude/skills
 
 | The human wants to… | Follow this recipe | Complete when… |
 | --- | --- | --- |
-| Connect an account | [Connect Cronitor](#connect-cronitor) | A read-only call succeeds against the confirmed organization |
+| Sign up or connect an account | [Connect Cronitor](#connect-cronitor) | A read-only call succeeds against the confirmed organization |
 | Understand current coverage | [Audit monitoring](#audit-monitoring) | You report what is covered, what is not, and the evidence for each conclusion |
 | Monitor a workload or endpoint | [Add monitoring](#add-monitoring) | Cronitor observes the real workload or performs a successful real probe |
 | Understand a failure | [Investigate a failure](#investigate-a-failure) | You explain the evidence, likely cause, and next action without changing state |
@@ -46,11 +46,23 @@ If a request contains several of these tasks, follow only the recipes needed for
 Pick the connection path in this order and do not ask the human to choose between options that are not available to them:
 
 1. **Already connected.** If Cronitor MCP tools are present in your session, use them. Read the published tool schemas and make one read-only call.
-2. **Your client supports MCP** (Claude Code, Claude, Cursor, Codex, VS Code, or another Streamable HTTP client). Add the server `https://cronitor.io/mcp` using the exact steps for that client in [Connect your MCP client](https://cronitor.io/docs/mcp-server.md#connect-your-mcp-client), then let the human complete sign-in and consent in the browser. The connection follows the Cronitor organization they are signed in to. Prefer this path: it needs no key handling.
-3. **No MCP support, but you have a shell.** Use [CronitorCLI](https://cronitor.io/docs/using-cronitor-cli.md). If `cronitor status` already succeeds, you are connected. If the CLI is missing or unconfigured, tell the human what installing it does (the install script runs with `sudo`) and ask before installing. After approval, install it and have the human provide the SDK Integration key through an environment variable or `cronitor configure`, never pasted into the conversation. Where the key lives is described in the MCP doc's [SDK Integration key section](https://cronitor.io/docs/mcp-server.md#use-the-existing-sdk-integration-key).
+2. **Your client supports MCP** (Claude Code, Claude, Cursor, Codex, VS Code, or another Streamable HTTP client). Add the server `https://cronitor.io/mcp` using the exact steps for that client in [Connect your MCP client](https://cronitor.io/docs/mcp-server.md#connect-your-mcp-client), then let the human sign in or create an account in the same browser flow. The connection follows their current Cronitor organization. Prefer this path: it needs no key handling.
+3. **No MCP support, but you have a shell.** Use [CronitorCLI](https://cronitor.io/docs/using-cronitor-cli.md). First try a read-only call such as `cronitor monitor list`; reuse working credentials. If installation or an update is needed, explain the change (the install script runs with `sudo`) and obtain approval unless already authorized. Check `cronitor auth --help`, then follow the browser login steps below. Explicit API keys supplied through a secret manager remain supported for CI and containers.
 4. **Neither is possible.** Report `blocked`, link the client setup section, and continue any repository-only work. Do not fall back to a credential pasted in chat.
 
 Never ask the human to paste an OAuth token, API key, ping key, or password into the conversation.
+
+### CLI signup and login
+
+Use the same command for new and existing accounts; do not require a separate signup before connecting. `cronitor signup` is an alias for `cronitor auth login`.
+
+1. Reuse the intended config path. For a fresh installation, choose a writable path owned by the OS user that will run the CLI; see [Config ownership and persistent access](https://cronitor.io/docs/using-cronitor-cli.md#config-ownership-and-persistent-access). Do not replace an existing credential without the human's approval.
+2. Explain that login installs a persistent machine credential that allows unattended access with the displayed permissions, then run `cronitor auth login --no-browser`.
+3. Keep the process running and show the verification URL and user code to the human: "Open this URL, sign in or create your Cronitor account, then approve this CLI connection." The human enters passwords and completes Google, GitHub, or required SAML authentication in the browser.
+4. Wait for the command to finish. If it expires or is denied, report that result; don't repeatedly start new login attempts without the human being ready.
+5. Run `cronitor auth status` to confirm the organization and credential, then a read-only resource call such as `cronitor monitor list`. A read-only Cronitor user receives telemetry-only CLI access; if the task needs resource management, explain that limitation instead of retrying writes.
+
+Retain the credential for subsequent work. `cronitor auth logout` revokes it and stops authentication for jobs that use it; do not run logout as automatic task cleanup. Machine credentials are organization-owned and survive user removal or role changes until explicitly revoked. Keep credentials in the config/secret manager, never in chat or repository files.
 
 Once connected, confirm the organization with a compact inventory:
 

@@ -16,6 +16,12 @@ Claude Code users can instead copy a skill folder to `~/.claude/skills/` (user s
 |-------|---------|
 | [`cronitor`](cronitor/) | Task recipes for managing Cronitor through the hosted MCP server, CronitorCLI, or the REST API, with a tool reference, CLI and REST equivalents, the monitor YAML format, and helper scripts |
 
+## Connect or sign up
+
+Ask your agent to connect Cronitor. It reuses an existing connection, or guides you through hosted MCP browser sign-in. With a shell and CronitorCLI, it can run `cronitor auth login --no-browser` and show you the verification URL and user code. Sign in or create an account in that browser step while the command waits; no API key or password needs to be pasted into chat. `cronitor signup` is an alias for login.
+
+The agent checks `cronitor auth status` and a read-only resource call before continuing. CLI login saves a persistent machine credential; `cronitor auth logout` revokes it, so jobs using it stop authenticating. The skill does not use logout as routine task cleanup. Existing explicit keys remain supported for CI and containers.
+
 ## How these relate to the rest of Cronitor
 
 - The hosted MCP server at `https://cronitor.io/mcp` supplies the tools. See the [hosted MCP server docs](https://cronitor.io/docs/mcp-server).
