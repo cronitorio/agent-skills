@@ -69,10 +69,12 @@ if [ "$cli_ok" -eq 1 ] && [ "$key_ok" -eq 1 ]; then
 elif [ "$cli_ok" -eq 1 ]; then
   echo "2. CronitorCLI may already have a saved credential even though the environment"
   echo "   key is unset. Try 'cronitor monitor list' with the intended config first."
-  echo "   If login is needed, check 'cronitor auth --help' (update older versions),"
-  echo "   choose a writable config, then run 'cronitor auth login --no-browser'."
-  echo "   Keep it running while the human uses the verification URL and user code"
-  echo "   to sign in or create an account. Never request a key or password in chat."
+  echo "   If login is needed, check 'cronitor auth login --help' for PKCE support."
+  echo "   Choose a writable config. Locally use 'cronitor auth login'. Remotely,"
+  echo "   have the human run 'cronitor auth login --no-browser' in their terminal,"
+  echo "   open its URL, then paste the callback URL directly into its hidden prompt."
+  echo "   Never request callback URLs, keys, or passwords in chat. Version 33.6's"
+  echo "   device-code login is unsupported; keep API-key auth until a PKCE update."
   echo "   Verify with 'cronitor auth status'. Do not log out as task cleanup."
 elif [ "$key_ok" -eq 1 ]; then
   echo "2. CRONITOR_API_KEY is set but CronitorCLI is not installed. Use the REST API"
