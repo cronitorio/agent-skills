@@ -1,0 +1,15 @@
+{
+  "name": "cronitor",
+  "description": "Official Cronitor plugins for coding agents.",
+  "owner": {
+    "name": "Cronitor",
+    "url": "https://cronitor.io"
+  },
+  "plugins": [
+    {
+      "name": "cronitor",
+      "source": "./plugins/cronitor",
+      "description": "Cronitor's hosted MCP server and agent skill."
+    }
+  ]
+}

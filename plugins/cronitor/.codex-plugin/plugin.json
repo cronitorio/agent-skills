@@ -1,0 +1,46 @@
+{
+  "name": "cronitor",
+  "description": "Cronitor's hosted MCP server and agent skill: monitor cron jobs, background workers, heartbeats, websites, and APIs, and route alerts.",
+  "author": {
+    "name": "Cronitor",
+    "url": "https://cronitor.io"
+  },
+  "homepage": "https://cronitor.io/docs/agent-quickstart",
+  "repository": "https://github.com/cronitorio/agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "cron",
+    "monitoring",
+    "heartbeats",
+    "uptime",
+    "alerts",
+    "status pages"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Cronitor",
+    "shortDescription": "Monitor jobs, sites, and APIs",
+    "longDescription": "Connect Cronitor's hosted MCP server and agent skill. Your agent finds the scheduled jobs, workers, endpoints, and frontends in your project, asks what you want to monitor, then sets up job monitors, uptime checks, web analytics, status pages, and alert routing, and verifies each one.",
+    "developerName": "Cronitor",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://cronitor.io",
+    "privacyPolicyURL": "https://cronitor.io/privacy",
+    "termsOfServiceURL": "https://cronitor.io/terms",
+    "supportURL": "https://cronitor.io/help",
+    "defaultPrompt": [
+      "Set up Cronitor monitoring for this project",
+      "Which of my Cronitor monitors are failing right now?",
+      "Send my Cronitor alerts to Slack"
+    ],
+    "brandColor": "#2E16B5",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/icon.svg",
+    "logoDark": "./assets/icon-dark.svg"
+  }
+}

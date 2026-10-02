@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "cronitor": {
+      "type": "http",
+      "url": "https://cronitor.io/mcp"
+    }
+  }
+}

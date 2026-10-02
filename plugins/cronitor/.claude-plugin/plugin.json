@@ -1,0 +1,17 @@
+{
+  "name": "cronitor",
+  "description": "Cronitor's hosted MCP server and agent skill: monitor cron jobs, background workers, heartbeats, websites, and APIs, and route alerts.",
+  "author": {
+    "name": "Cronitor",
+    "url": "https://cronitor.io"
+  },
+  "homepage": "https://cronitor.io/docs/agent-quickstart",
+  "repository": "https://github.com/cronitorio/agent-skills",
+  "license": "MIT",
+  "displayName": "Cronitor",
+  "icon": "./assets/icon.svg",
+  "documentationUrl": "https://cronitor.io/docs/agent-quickstart",
+  "supportUrl": "https://cronitor.io/help",
+  "privacyPolicyUrl": "https://cronitor.io/privacy",
+  "termsOfServiceUrl": "https://cronitor.io/terms"
+}
