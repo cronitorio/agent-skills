@@ -142,12 +142,12 @@ Once connected, confirm the organization with a compact inventory:
 get_status({})
 list_environments({})
 list_notification_lists({})
-list_monitors({"page_size": 25})
+list_monitors({"detail": "summary", "page_size": 25})
 ```
 
 Over CronitorCLI the same discovery is `cronitor status`, `cronitor monitor list`, `cronitor environment list`, and `cronitor notification list`.
 
-The CLI and the [REST API](https://cronitor.io/docs/api.md) expose the same resources as the MCP tools. Request summary fields first and paginate only when the task needs the remaining resources.
+The CLI and [REST API](https://cronitor.io/docs/api.md) expose the same resources. Use `detail: "summary"` on monitor and issue lists; paginate only when needed.
 
 **Done when:** a read-only call succeeds and the organization is unambiguous.
 
@@ -276,7 +276,7 @@ setup_monitor({
 })
 ```
 
-Cronitor performs the probe, so no runtime ping is required. Read the monitor back and observe one successful real probe. For MCP endpoints, use the request shape in the [MCP monitoring guide](https://cronitor.io/guides/monitor-mcp-servers).
+Cronitor performs the probe. Read the monitor back and observe a successful real probe. Use `describe_monitor_assertions` for assertion syntax and the [MCP monitoring guide](https://cronitor.io/guides/monitor-mcp-servers) for MCP endpoints.
 
 ### Example: web analytics and performance monitoring
 
@@ -292,7 +292,7 @@ The snippet holds the site's client key, which is meant for browsers and is not 
 query_site({"site": "<site key>", "type": "aggregation", "time": "1h"})
 ```
 
-The script ignores automated browsers such as Playwright, Puppeteer, and Selenium, so a scripted visit does not verify the install. Until a real visit arrives, report `configured but unverified`. See the [RUM quickstart](https://cronitor.io/docs/rum-quickstart.md).
+Automated browsers do not verify the install. Until a real visit arrives, report `configured but unverified`. Use `describe_site_query` for metrics, filters, and date boundaries. See the [RUM quickstart](https://cronitor.io/docs/rum-quickstart.md).
 
 ### Example: status page
 
@@ -381,7 +381,7 @@ get_aggregates({"monitors": ["nightly-import"], "time": "7d"})
 
 The result contains per-monitor, per-environment (per-region for checks) totals: `run_count`, `complete_count`, `fail_count`, `tick_count`, `alert_count`, `duration_mean`, `downtime_seconds`, `uptime`, and a derived `success_rate`.
 
-"Is nightly-import getting slower?" is a trend question. `fields` is required; ask only for the series you need:
+For trends, pass exactly one of `fields` (built-ins), `metric` (custom), or `metric_names` (discover custom names):
 
 ```text
 get_metrics({"monitors": ["nightly-import"], "time": "30d", "fields": ["duration_p90", "fail_count"]})

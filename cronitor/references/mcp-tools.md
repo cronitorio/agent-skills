@@ -5,7 +5,7 @@ Generated from the MCP tool registry in the Cronitor repository with
 tools change. The live `tools/list` response is authoritative for field-level
 schemas.
 
-68 tools. Scope is the API-key scope the tool requires; with OAuth, read tools
+71 tools. Scope is the API-key scope the tool requires; with OAuth, read tools
 are available to every role and write tools require a role that can edit that
 resource family.
 
@@ -15,7 +15,7 @@ resource family.
 | `list_failing_monitors` | List monitors that are currently failing, in the default environment unless env is given. | `monitor:read` |
 | `setup_monitor` | Create or update ONE heartbeat, job, or check monitor from a human description, by stable key. Accepts human schedules like 'every 30 minutes', applies presets, checks plan limits, and returns the ping URL. Prefer this over create_monitors unless you already have exact API-shaped monitor objects or need to create many at once. Over the plan's monitor limit, the monitor is saved disabled and the response adds monitor_quota; tell the human. | `monitor:write` |
 | `get_setup_context` | Get what an agent needs before setting up monitoring: the plan and its limits, the default environment and notification list, the telemetry URL base, and where the human finds the SDK Integration key. Never returns a secret key. | `monitor:read` |
-| `list_monitors` | List, filter, search, sort, and paginate monitors, matching `cronitor monitor list`. | `monitor:read` |
+| `list_monitors` | List, filter, search, sort, and paginate monitors, matching `cronitor monitor list`. Use detail=summary for inventory; get_monitor for configuration. Request credentials are omitted from both. | `monitor:read` |
 | `search_monitors` | Search monitors with Cronitor's scoped query syntax, matching `cronitor monitor search`. | `monitor:read` |
 | `get_monitor` | Get one monitor by key, matching `cronitor monitor get`. | `monitor:read` |
 | `create_monitors` | Create one or more monitors from exact API-shaped monitor objects (all Monitor API fields), matching `cronitor monitor create`; bulk input uses the API's idempotent upsert. Request configuration is replaced, not merged: do not submit redacted reads; use update_monitor to preserve hidden fields. For a single monitor from a human description prefer setup_monitor. Over the plan's monitor limit, extra monitors are saved disabled and the response adds monitor_quota naming them; tell the human. | `monitor:write` |
@@ -36,7 +36,7 @@ resource family.
 | `create_status_page_component` | Add a monitor, group, or custom component to a status page, matching `cronitor statuspage component create`. | `statuspage:write` |
 | `update_status_page_component` | Update supplied component fields or relationships, matching `cronitor statuspage component update`. | `statuspage:write` |
 | `delete_status_page_component` | Delete one component by key, matching `cronitor statuspage component delete`. | `statuspage:write` |
-| `list_issues` | List, filter, search, sort, and paginate issues, matching `cronitor issue list`. | `issue:read` |
+| `list_issues` | List, filter, search, sort, and paginate issues, matching `cronitor issue list`. Use detail=summary for triage without update history; get_issue for details. | `issue:read` |
 | `get_issue` | Get one issue by key with optional relationship expansions, matching `cronitor issue get`. | `issue:read` |
 | `create_issue` | Create an issue, optionally publishing it to status pages, matching `cronitor issue create`. | `issue:write` |
 | `update_issue` | Update supplied issue fields by key, matching `cronitor issue update`. Relationship arrays replace existing relationships. The updates array replaces the history: omitted existing update keys are deleted, and entries without keys create new updates. Fetch the issue first; retrying unkeyed updates is not idempotent. | `issue:write` |
@@ -70,7 +70,7 @@ resource family.
 | `create_site` | Create a Real User Monitoring site, matching `cronitor site create`. The response includes the install snippet. | `site:write` |
 | `update_site` | Update supplied RUM site settings by key, matching `cronitor site update`. | `site:write` |
 | `delete_site` | Delete one RUM site by key and all its associated monitors, matching `cronitor site delete`. | `site:write` |
-| `query_site` | Query RUM aggregations, breakdowns, time series, or error groups, matching `cronitor site query`. | `site:read` |
+| `query_site` | Query RUM aggregations, breakdowns, time series, search options, or error groups, matching `cronitor site query`. Use describe_site_query for metric meanings, valid combinations, and complete local-day examples. | `site:read` |
 | `list_site_errors` | List JavaScript errors, optionally for one site, matching `cronitor site error list`. | `site:read` |
 | `get_site_error` | Get one JavaScript error by key, matching `cronitor site error get`. | `site:read` |
 | `list_integrations` | List alert destinations on the account. Does not include the service catalogue. | `integration:read` |
@@ -79,3 +79,6 @@ resource family.
 | `connect_integration` | Start a browser connection for Slack or PagerDuty. Hand the authorize_url to the human. With add_to, the destination joins those notification lists when the human finishes, even if you stop polling; check_integration_connection reports added_to. | `integration:write` |
 | `check_integration_connection` | Poll a connect session started by connect_integration until it is complete, failed, or expired. | `integration:read` |
 | `delete_integration` | Soft-delete one integration by service and label. In-use destinations return 409 unless force is true. | `integration:write` |
+| `describe_monitor_assertions` | Use before writing assertions. Returns supported selectors, operators, value syntax, and examples generated from the monitor assertion parser's definitions. | `monitor:read` |
+| `describe_site_query` | Use before query_site. Returns metric meanings and units, supported query shapes, dimensions, ordering rules, time buckets, defaults, and a complete-days example. | `site:read` |
+| `list_issue_assignees` | Find active members of this organization by name or email before assigning an issue. Requires issue:write permission. Use the returned email in assigned_to or assign_to. Does not return roles or credentials. | `issue:write` |

@@ -78,7 +78,7 @@ Full recipe: `references/recipes.md#connect-an-alert-destination`.
 
 For CLI login, reuse the intended config or choose a writable config owned by the intended OS user. Explain persistent unattended access before starting. Browser login needs CronitorCLI 33.7 or later. Use ordinary `auth login` when CLI and browser are on the same computer. On a remote host, have the human run `auth login --no-browser` in a terminal they can access directly: they sign in through the printed authorization URL, then paste the full localhost callback URL into the CLI's hidden prompt, even if the browser shows a connection error. Keep the command running. Never ask for callback URLs, authorization codes, PKCE verifiers, or tokens in chat or recorded tool arguments. If the human cannot access the terminal prompt, report the blocker. Run `cronitor auth status` after success. Do not replace existing credentials or run `auth logout` as automatic cleanup: logout revokes access for jobs using that key. Read-only users receive telemetry-only CLI credentials; report that limitation when the task needs resource management.
 
-Confirm the selected organization with a compact read-only inventory: `get_status({})`, `list_environments({})`, `list_notification_lists({})`, `list_monitors({"page_size": 25})`. Without MCP, the same calls are `cronitor status`, `cronitor monitor list`, `cronitor environment list`, and `cronitor notification list`. Request summary fields first and paginate only when needed.
+Confirm the selected organization with a compact read-only inventory: `get_status({})`, `list_environments({})`, `list_notification_lists({})`, `list_monitors({"detail": "summary", "page_size": 25})`. Without MCP, the same calls are `cronitor status`, `cronitor monitor list`, `cronitor environment list`, and `cronitor notification list`. Use summary mode for monitor and issue lists and paginate only when needed.
 
 Done when a read-only call succeeds and the organization is unambiguous. Full recipe: `references/recipes.md#connect-cronitor`.
 
@@ -102,7 +102,7 @@ Full recipe: `references/recipes.md#investigate-a-failure`.
 
 ## Query metrics
 
-Read-only. `get_aggregates({"monitors": ["nightly-import"], "time": "7d"})` answers totals questions (runs, failures, success rate, duration percentiles, uptime). `get_metrics({"monitors": [...], "time": "30d", "fields": ["duration_p90", "fail_count"]})` answers trend questions; `fields` is required. Select by `groups`, `tags`, or `types` for "which of my jobs" questions. Always state the time range and environment the numbers cover. Row-level run logs are not available through MCP.
+Read-only. `get_aggregates({"monitors": ["nightly-import"], "time": "7d"})` answers totals questions (runs, failures, success rate, duration mean, uptime). `get_metrics({"monitors": [...], "time": "30d", "fields": ["duration_p90", "fail_count"]})` answers trends. Pass exactly one of `fields` (built-ins), `metric` (custom), or `metric_names` (discover custom names). Select by `groups`, `tags`, or `types` for "which of my jobs" questions. Use `describe_site_query` for RUM analytics. Always state the range and environment. Row-level run logs are not available through MCP.
 
 Full recipe: `references/recipes.md#query-metrics`.
 
