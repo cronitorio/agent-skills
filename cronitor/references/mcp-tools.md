@@ -18,12 +18,12 @@ resource family.
 | `list_monitors` | List, filter, search, sort, and paginate monitors, matching `cronitor monitor list`. | `monitor:read` |
 | `search_monitors` | Search monitors with Cronitor's scoped query syntax, matching `cronitor monitor search`. | `monitor:read` |
 | `get_monitor` | Get one monitor by key, matching `cronitor monitor get`. | `monitor:read` |
-| `create_monitors` | Create one or more monitors from exact API-shaped monitor objects (all Monitor API fields), matching `cronitor monitor create`; bulk input uses the API's idempotent upsert. For a single monitor from a human description prefer setup_monitor. Over the plan's monitor limit, extra monitors are saved disabled and the response adds monitor_quota naming them; tell the human. | `monitor:write` |
-| `update_monitor` | Update one monitor by key while preserving omitted API fields, matching `cronitor monitor update`. | `monitor:write` |
+| `create_monitors` | Create one or more monitors from exact API-shaped monitor objects (all Monitor API fields), matching `cronitor monitor create`; bulk input uses the API's idempotent upsert. Request configuration is replaced, not merged: do not submit redacted reads; use update_monitor to preserve hidden fields. For a single monitor from a human description prefer setup_monitor. Over the plan's monitor limit, extra monitors are saved disabled and the response adds monitor_quota naming them; tell the human. | `monitor:write` |
+| `update_monitor` | Update one monitor by key while preserving omitted API fields, including nested request fields. An unchanged [REDACTED URL] marker preserves the saved URL. Supply a complete URL to replace it. Request headers and cookies are replacement maps: use {} to clear them, and an empty body to clear it. | `monitor:write` |
 | `delete_monitors` | Delete one or more monitors by key, matching `cronitor monitor delete`. | `monitor:write` |
-| `export_monitors` | Export every matching monitor as Cronitor YAML, matching `cronitor monitor export`. | `monitor:read` |
+| `export_monitors` | Export every matching monitor as Cronitor YAML, matching `cronitor monitor export`. Request headers, cookies, bodies, and URL credentials are redacted; restore them before importing. | `monitor:read` |
 | `clone_monitor` | Clone a monitor and optionally give the clone a new name, matching `cronitor monitor clone`. | `monitor:write` |
-| `pause_monitor` | Pause a monitor indefinitely or for a fixed number of hours, matching `cronitor monitor pause`. | `monitor:write` |
+| `pause_monitor` | Pause a monitor indefinitely or for a fixed number of hours, matching `cronitor monitor pause`. Retrying a timed pause restarts its duration from the retry time. | `monitor:write` |
 | `unpause_monitor` | Resume alerting for a paused monitor, matching `cronitor monitor unpause`. | `monitor:write` |
 | `get_metrics` | Answer trend questions like 'how has p90 duration changed this month' or 'how has queue_depth trended'. Returns time series for the requested built-in fields or one custom metric (avg and count per bucket), per monitor per environment (or per region for checks), matching `cronitor metric get`. Use metric_names to list known custom metric names. Requires at least one of monitors, groups, tags, or types. | `monitor:read` |
 | `get_aggregates` | Answer questions like 'how many times did the nightly import fail last week' or 'which checks had the worst success rate'. Returns totals for the range per monitor per environment (or per region for checks): run_count, complete_count, fail_count, tick_count, alert_count, event_count, duration_mean, downtime_seconds, uptime, and a derived success_rate, matching `cronitor metric aggregate`. Requires at least one of monitors, groups, tags, or types. | `monitor:read` |
@@ -39,7 +39,7 @@ resource family.
 | `list_issues` | List, filter, search, sort, and paginate issues, matching `cronitor issue list`. | `issue:read` |
 | `get_issue` | Get one issue by key with optional relationship expansions, matching `cronitor issue get`. | `issue:read` |
 | `create_issue` | Create an issue, optionally publishing it to status pages, matching `cronitor issue create`. | `issue:write` |
-| `update_issue` | Update supplied issue fields by key, matching `cronitor issue update`. Relationship and update arrays use DRF replacement semantics. | `issue:write` |
+| `update_issue` | Update supplied issue fields by key, matching `cronitor issue update`. Relationship arrays replace existing relationships. The updates array replaces the history: omitted existing update keys are deleted, and entries without keys create new updates. Fetch the issue first; retrying unkeyed updates is not idempotent. | `issue:write` |
 | `resolve_issue` | Resolve one issue through the DRF bulk state-change pathway, matching `cronitor issue resolve`. | `issue:write` |
 | `delete_issue` | Delete one issue by key, matching `cronitor issue delete`. | `issue:write` |
 | `bulk_update_issues` | Delete, change state, or assign multiple issues, matching `cronitor issue bulk`. | `issue:write` |
@@ -52,8 +52,8 @@ resource family.
 | `get_group` | Get one group by key, matching `cronitor group get`. | `monitor:read` |
 | `create_group` | Create a group and optionally assign monitors, matching `cronitor group create`. | `monitor:write` |
 | `update_group` | Update a group's name or complete ordered monitor membership, matching `cronitor group update`. | `monitor:write` |
-| `delete_group` | Delete one group by key, matching `cronitor group delete`. | `monitor:write` |
-| `pause_group` | Pause every monitor in a group for a fixed number of hours, matching `cronitor group pause`. | `monitor:write` |
+| `delete_group` | Delete one group by key and its status-page components, matching `cronitor group delete`. | `monitor:write` |
+| `pause_group` | Pause every monitor in a group for a fixed number of hours, matching `cronitor group pause`. Retrying restarts the pause duration from the retry time. | `monitor:write` |
 | `resume_group` | Resume every paused monitor in a group, matching `cronitor group resume`. | `monitor:write` |
 | `list_environments` | List environments, matching `cronitor environment list`. | `monitor:read` |
 | `get_environment` | Get one environment by key, matching `cronitor environment get`. | `monitor:read` |
@@ -69,7 +69,7 @@ resource family.
 | `get_site` | Get one RUM site by key, matching `cronitor site get`. | `site:read` |
 | `create_site` | Create a Real User Monitoring site, matching `cronitor site create`. The response includes the install snippet. | `site:write` |
 | `update_site` | Update supplied RUM site settings by key, matching `cronitor site update`. | `site:write` |
-| `delete_site` | Delete one RUM site by key, matching `cronitor site delete`. | `site:write` |
+| `delete_site` | Delete one RUM site by key and all its associated monitors, matching `cronitor site delete`. | `site:write` |
 | `query_site` | Query RUM aggregations, breakdowns, time series, or error groups, matching `cronitor site query`. | `site:read` |
 | `list_site_errors` | List JavaScript errors, optionally for one site, matching `cronitor site error list`. | `site:read` |
 | `get_site_error` | Get one JavaScript error by key, matching `cronitor site error get`. | `site:read` |
