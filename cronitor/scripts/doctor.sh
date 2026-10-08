@@ -88,7 +88,7 @@ bare_version_token() {
 # 1. CronitorCLI
 if command -v cronitor >/dev/null 2>&1; then
   cli_path=$(command -v cronitor)
-  # 33.8 has no --version and no `version` command. Use --version only when
+  # Some builds have no --version and no `version` command. Use --version only when
   # that invocation succeeds and yields a version; otherwise parse --help,
   # which prints "CronitorCLI version <token>".
   cli_version=""
@@ -227,13 +227,11 @@ elif [ "$cli_ok" -eq 1 ]; then
       echo "   key is unset. Try 'cronitor monitor list' with the intended config first."
       ;;
   esac
-  echo "   If login is needed, browser login needs CronitorCLI 33.7 or later."
-  echo "   Choose a writable config. On this machine use 'cronitor auth login --timeout 30m'."
+  echo "   If login is needed, choose a writable config. On this machine use 'cronitor auth login --timeout 30m'."
   echo "   Use '--no-browser' only when the browser is on another machine: the human runs"
   echo "   'cronitor auth login --no-browser --timeout 30m' in their terminal, opens its URL,"
   echo "   then pastes the callback URL directly into its hidden prompt."
-  echo "   Pass '--timeout 30m' so the CLI waits long enough for a relayed link"
-  echo "   (CronitorCLI 33.8 and earlier default to 5 minutes)."
+  echo "   Pass '--timeout 30m' so the CLI waits long enough for a relayed link."
   echo "   Once you open the link, finish signing in within about 5 minutes."
   echo "   Restarting login invalidates the previous URL."
   echo "   Never request callback URLs, keys, or passwords in chat."
@@ -249,8 +247,7 @@ else
   print_cli_install
   if [ "$install_blocked" -eq 0 ]; then
     echo "   Then sign in with 'cronitor auth login --timeout 30m'."
-    echo "   Pass '--timeout 30m' so the CLI waits long enough for a relayed link"
-    echo "   (CronitorCLI 33.8 and earlier default to 5 minutes)."
+    echo "   Pass '--timeout 30m' so the CLI waits long enough for a relayed link."
     echo "   Use '--no-browser' only when the browser is on another machine."
     echo "   Once you open the link, finish signing in within about 5 minutes."
     echo "   Restarting login invalidates the previous URL."
