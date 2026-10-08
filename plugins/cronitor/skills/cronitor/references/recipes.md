@@ -1,6 +1,6 @@
 # Cronitor agent recipes
 
-Recipes for AI agents working on Cronitor monitoring for a human. Find the request in the table below. {% .lead %}
+Recipes for AI agents working on Cronitor monitoring for a human. Find the request in the table below.
 
 All docs: https://cronitor.io/llms.txt. Start with the request the human actually made. Do not turn an audit into an implementation, fix a failure during a diagnosis, or enable every applicable Cronitor product.
 
@@ -125,14 +125,14 @@ Pick the connection path in this order and do not ask the human to choose betwee
 
 1. **Already connected.** If Cronitor MCP tools are present in your session, use them. Read the published tool schemas and make one read-only call.
 2. **Your client supports MCP** (Claude Code, Claude, Cursor, Codex, VS Code, or another Streamable HTTP client). Add the server `https://cronitor.io/mcp` using the exact steps for that client in [Connect your MCP client](https://cronitor.io/docs/mcp-server.md#connect-your-mcp-client), then let the human sign in or create an account in the same browser flow. The connection follows their current Cronitor organization. Prefer this path: it needs no key handling. If the Cronitor tools do not appear after the server is added, ask the human to sign in from the client's MCP panel (`/mcp` in Claude Code and Codex) or to start a new session, then continue.
-3. **No MCP support, but you have a shell.** Use [CronitorCLI](https://cronitor.io/docs/using-cronitor-cli.md). First try a read-only call such as `cronitor monitor list`; reuse working credentials. If installation or an update is needed, explain the change (the install script runs with `sudo`) and obtain approval unless already authorized. Then sign in as described below.
+3. **No MCP support, but you have a shell.** Use [CronitorCLI](https://cronitor.io/docs/using-cronitor-cli.md). First try a read-only call such as `cronitor monitor list`; reuse working credentials. If installation or an update is needed, explain the change and obtain approval unless already authorized, then run one command. With `sudo`: `curl -fsSL 'https://cronitor.io/install-linux?sudo=1' | sh`. Already root, including a container or CI image running as root: `curl -fsSL 'https://cronitor.io/install-linux' | sh`. Installing to `/usr/bin` needs root or sudo; if you are neither, ask the human instead of running the installer. macOS and other options: [Installation](https://cronitor.io/docs/using-cronitor-cli.md#installation). Then sign in as described below.
 4. **Neither is possible.** Report `blocked`, link the client setup section, and continue any repository-only work. Do not fall back to a credential pasted in chat.
 
 Never ask the human to paste an OAuth token, API key, or password into the conversation.
 
 ### CLI signup and login
 
-`cronitor auth login` signs in or creates an account in the browser; `cronitor signup` is the same command. It needs CronitorCLI 33.7 or later. On a remote host, have the human run `cronitor auth login --no-browser` in a terminal they control and paste the callback URL into that prompt, never into chat. Confirm with `cronitor auth status`.
+`cronitor auth login` signs in or creates an account in the browser; `cronitor signup` is the same command. It needs CronitorCLI 33.7 or later. Pass `--timeout 30m` so the CLI waits long enough for a relayed link (CronitorCLI 33.8 and earlier default to 5 minutes). Use `--no-browser` only when the browser is on another machine: the human runs `cronitor auth login --no-browser --timeout 30m` in a terminal they control and pastes the callback URL into that prompt, never into chat. Once you open the link, finish signing in within about 5 minutes. Restarting login invalidates the previous URL, so leave that command running. Confirm with `cronitor auth status`.
 
 Login installs a persistent machine credential owned by the organization. Explain that before starting, reuse the existing config path, and do not replace a credential without approval. Keep it for later work: `cronitor auth logout` stops every job that uses it, so never run it as cleanup. Read-only users receive telemetry-only access. Full steps and config ownership: [Authentication](https://cronitor.io/docs/using-cronitor-cli.md#authentication). CI and containers can supply `CRONITOR_API_KEY` from a secret manager instead.
 
