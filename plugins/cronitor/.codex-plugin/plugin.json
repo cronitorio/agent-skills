@@ -1,6 +1,6 @@
 {
   "name": "cronitor",
-  "version": "1.0.0+d1337dc90195",
+  "version": "1.0.0+f076d8d9898e",
   "description": "Cronitor's hosted MCP server and agent skill: monitor cron jobs, background workers, heartbeats, websites, and APIs, and route alerts.",
   "author": {
     "name": "Cronitor",

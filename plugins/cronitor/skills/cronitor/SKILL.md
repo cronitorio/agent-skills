@@ -70,7 +70,7 @@ Full recipe and the question template: `references/recipes.md#onboard-a-project`
 
 ## Connect an alert destination
 
-Requires approval. `list_integrations({})` first and reuse a match. Slack and PagerDuty: `connect_integration`, hand the human the `authorize_url`, poll `check_integration_connection`. Other services: `create_integration` with the value the human supplies; never echo it. Then merge the new label into the notification list with `get_notification_list` and `update_notification_list`; do not replace the map.
+Requires approval. `list_integrations({})` first and reuse a match. Slack, PagerDuty, and key-based services: `connect_integration` or `create_integration`, hand the human the `authorize_url`, and poll `check_integration_connection`. The human enters API keys and webhook URLs in the browser. Never ask for them in chat. Then merge the new label into the notification list with `get_notification_list` and `update_notification_list`; do not replace the map.
 
 Full recipe: `references/recipes.md#connect-an-alert-destination`.
 

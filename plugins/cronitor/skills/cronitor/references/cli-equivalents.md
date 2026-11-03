@@ -50,7 +50,7 @@ REST requests use HTTP Basic auth with the API key as the username and an empty 
 |------|----------|-------------|------|
 | Get / update a notification list | `get_notification_list`, `update_notification_list` | `cronitor notification get K`, `cronitor notification update K --data '{...}'` | `GET`/`PUT /api/notifications/K` |
 | Create a notification list | `create_notification_list` | `cronitor notification create --data '{...}'` | `POST /api/notifications` |
-| Create a key-based alert destination | `create_integration({"service": S, "name": N, "fields": {...}})` | `cronitor connect S --add-to default` (prompts for the key) | `POST /api/integrations` |
+| Create a key-based alert destination | `create_integration({"service": S, "name": N})`, then the human opens `authorize_url` | `cronitor connect S --add-to default` (prompts for the key) | `POST /api/integrations` |
 | Connect Slack or PagerDuty | `connect_integration`, `check_integration_connection` | `cronitor connect slack --add-to default` | `POST /api/integrations/connect`, `GET /api/integrations/connect/:token` |
 | Delete an alert destination | `delete_integration({"service": S, "label": L})` | `cronitor integration delete L --service S` | `DELETE /api/integrations?service=S&label=L` |
 | Groups | `list_groups`, `get_group`, `create_group`, `update_group`, `delete_group`, `pause_group`, `resume_group` | `cronitor group <list|get|create|update|delete|pause|resume>` | `/api/groups[/K]` |
