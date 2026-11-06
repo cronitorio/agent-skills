@@ -176,7 +176,7 @@ if [ -n "$platform" ]; then echo "$platform"; else echo "(none found)"; fi
 # 10. Existing Cronitor integration points
 section "Existing Cronitor references"
 cron_refs=$( {
-  find_files '*' | xargs -0 grep -I -l -E 'cronitor exec|cronitor ping|cronitor\.link|CRONITOR_API_KEY|CRONITOR_PING_API_KEY|import cronitor|require\(.cronitor|cronitorio/' 2>/dev/null
+  find_files '*' | xargs -0 grep -I -l -E 'cronitor exec|CRONITOR=[A-Za-z0-9_-]|MONITORIO=[A-Za-z0-9_-]|cronitor/shell|cronitor ping|cronitor\.link|CRONITOR_API_KEY|CRONITOR_PING_API_KEY|import cronitor|require\(.cronitor|cronitorio/' 2>/dev/null
 } | sort -u | head -n 50)
 if [ -n "$cron_refs" ]; then echo "$cron_refs"; else echo "(none found)"; fi
 
