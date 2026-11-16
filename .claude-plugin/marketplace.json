@@ -3,13 +3,31 @@
   "description": "Official Cronitor plugins for coding agents.",
   "owner": {
     "name": "Cronitor",
+    "email": "support@cronitor.io",
     "url": "https://cronitor.io"
   },
   "plugins": [
     {
       "name": "cronitor",
       "source": "./plugins/cronitor",
-      "description": "Cronitor's hosted MCP server and agent skill."
+      "version": "1.0.1",
+      "description": "Monitor cron jobs, background workers, heartbeats, websites, and APIs with Cronitor, and route alerts.",
+      "author": {
+        "name": "Cronitor",
+        "email": "support@cronitor.io",
+        "url": "https://cronitor.io"
+      },
+      "homepage": "https://cronitor.io/docs/agent-quickstart",
+      "repository": "https://github.com/cronitorio/agent-skills",
+      "license": "MIT",
+      "keywords": [
+        "cron",
+        "monitoring",
+        "heartbeats",
+        "uptime",
+        "alerts",
+        "status pages"
+      ]
     }
   ]
 }

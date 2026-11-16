@@ -1,6 +1,6 @@
 ---
 name: cronitor
-description: Onboard a project, connect, audit, add, investigate, query, and change Cronitor monitoring for cron jobs, background workers, heartbeats, websites, APIs, and MCP servers through the Cronitor MCP server, CronitorCLI, or the REST API. Use when a human mentions Cronitor, asks whether scheduled jobs or endpoints are monitored, wants alerts when a job fails or a site goes down, asks why a monitor is failing, wants failure counts or duration trends, or asks to change monitor, alert, status page, or environment configuration. Includes task recipes, a tool reference, CLI and REST equivalents, the monitor YAML format, and scripts that check the connection path and inventory scheduled work.
+description: Onboard a project, connect, audit, add, investigate, query, and change Cronitor monitoring for cron jobs, background workers, heartbeats, websites, APIs, and AI agent tool servers through the Cronitor connector, CronitorCLI, or the REST API. Use when a human mentions Cronitor, asks whether scheduled jobs or endpoints are monitored, wants alerts when a job fails or a site goes down, asks why a monitor is failing, wants failure counts or duration trends, or asks to change monitor, alert, status page, or environment configuration. Includes task recipes, a tool reference, CLI and REST equivalents, the monitor YAML format, and scripts that check the connection path and inventory scheduled work.
 license: MIT
 metadata:
   version: "1.0.0"
@@ -70,7 +70,7 @@ Full recipe and the question template: `references/recipes.md#onboard-a-project`
 
 ## Connect an alert destination
 
-Requires approval. `list_integrations({})` first and reuse a match. Slack, PagerDuty, and key-based services: `connect_integration` or `create_integration`, hand the human the `authorize_url`, and poll `check_integration_connection`. The human enters API keys and webhook URLs in the browser. Never ask for them in chat. Then merge the new label into the notification list with `get_notification_list` and `update_notification_list`; do not replace the map.
+Requires approval. `list_integrations({})` first and reuse a match. Slack and PagerDuty: `connect_integration`, hand the human the `authorize_url`, poll `check_integration_connection`. Other services: `create_integration` with the value the human supplies; never echo it. Then merge the new label into the notification list with `get_notification_list` and `update_notification_list`; do not replace the map.
 
 Full recipe: `references/recipes.md#connect-an-alert-destination`.
 
