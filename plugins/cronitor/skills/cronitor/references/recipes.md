@@ -6,13 +6,7 @@ All docs: https://cronitor.io/llms.txt. Start with the request the human actuall
 
 ## Install the Cronitor skill
 
-The Cronitor skill bundles these recipes with a tool reference, CLI equivalents, and helper scripts. Install it once:
-
-```bash
-npx skills add cronitorio/agent-skills
-```
-
-Claude Code and Codex users can install the Cronitor plugin instead, which adds the skill and the [MCP server](https://cronitor.io/docs/mcp-server.md) together. In Claude Code:
+The Cronitor skill bundles these recipes with a tool reference, CLI equivalents, and helper scripts. Claude Code and Codex users can install the Cronitor plugin, which adds the skill and the [MCP server](https://cronitor.io/docs/mcp-server.md) together. In Claude Code:
 
 ```bash
 claude plugin marketplace add cronitorio/agent-skills
@@ -125,7 +119,7 @@ Pick the connection path in this order and do not ask the human to choose betwee
 
 1. **Already connected.** If Cronitor MCP tools are present in your session, use them. Read the published tool schemas and make one read-only call.
 2. **Your client supports MCP** (Claude Code, Claude, Cursor, Codex, VS Code, or another Streamable HTTP client). Add the server `https://cronitor.io/mcp` using the exact steps for that client in [Connect your MCP client](https://cronitor.io/docs/mcp-server.md#connect-your-mcp-client), then let the human sign in or create an account in the same browser flow. The connection follows their current Cronitor organization. Prefer this path: it needs no key handling. If the Cronitor tools do not appear after the server is added, ask the human to sign in from the client's MCP panel (`/mcp` in Claude Code and Codex) or to start a new session, then continue.
-3. **No MCP support, but you have a shell.** Use [CronitorCLI](https://cronitor.io/docs/using-cronitor-cli.md). First try a read-only call such as `cronitor monitor list`; reuse working credentials. If installation or an update is needed, explain the change and obtain approval unless already authorized, then run one command. With `sudo`: `curl -fsSL 'https://cronitor.io/install-linux?sudo=1' | sh`. Already root, including a container or CI image running as root: `curl -fsSL 'https://cronitor.io/install-linux' | sh`. Installing to `/usr/bin` needs root or sudo; if you are neither, ask the human instead of running the installer. macOS and other options: [Installation](https://cronitor.io/docs/using-cronitor-cli.md#installation). Then sign in as described below.
+3. **No MCP support, but you have a shell.** Use [CronitorCLI](https://cronitor.io/docs/using-cronitor-cli.md). First try a read-only call such as `cronitor monitor list`; reuse working credentials. If installation or an update is needed, explain the change and obtain approval unless already authorized, then follow the official CronitorCLI [installation instructions](https://cronitor.io/docs/using-cronitor-cli.md#installation) for this host. Installing to `/usr/bin` on Linux needs root or sudo; if you are neither, ask the human instead of running the installer. Then sign in as described below.
 4. **Neither is possible.** Report `blocked`, link the client setup section, and continue any repository-only work. Do not fall back to a credential pasted in chat.
 
 Never ask the human to paste an OAuth token, API key, or password into the conversation.
