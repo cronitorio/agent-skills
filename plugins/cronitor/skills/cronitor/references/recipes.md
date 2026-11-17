@@ -6,7 +6,7 @@ All docs: https://cronitor.io/llms.txt. Start with the request the human actuall
 
 ## Install the Cronitor skill
 
-The Cronitor skill bundles these recipes with a tool reference, CLI equivalents, and helper scripts. Claude Code and Codex users can install the Cronitor plugin, which adds the skill and the [MCP server](https://cronitor.io/docs/mcp-server.md) together. In Claude Code:
+The Cronitor skill bundles these recipes with a tool reference and CLI equivalents. Claude Code and Codex users can install the Cronitor plugin, which adds the skill and the [MCP server](https://cronitor.io/docs/mcp-server.md) together. In Claude Code:
 
 ```bash
 claude plugin marketplace add cronitorio/agent-skills

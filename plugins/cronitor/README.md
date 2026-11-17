@@ -5,16 +5,7 @@ Cronitor monitors cron jobs, background workers, heartbeats, websites, APIs, and
 ## What it installs
 
 - **Cronitor MCP server** at `https://cronitor.io/mcp`. Your agent uses it to read and change your Cronitor monitors, checks, sites, status pages, notification lists, and alert integrations. You sign in through your browser with OAuth; no API key is stored in the plugin.
-- **Cronitor skill.** Task recipes for onboarding a project, auditing coverage, adding monitoring, investigating failures, querying metrics, and changing configuration, plus a tool reference and two helper scripts.
-
-## What runs on your machine
-
-The skill includes two read-only shell scripts. Your agent runs them only when a recipe calls for it.
-
-- `scripts/doctor.sh` checks whether CronitorCLI is installed, whether `CRONITOR_API_KEY` is set (without printing it), and whether `https://cronitor.io/mcp` is reachable. It makes one HTTPS request to that URL and sends no data.
-- `scripts/find-schedulers.sh` lists scheduled work on the host and in the current project, such as crontabs, systemd timers, Kubernetes CronJobs, and scheduled GitHub Actions. It reads local files only and makes no network requests.
-
-Neither script changes anything on your machine.
+- **Cronitor skill.** Task recipes for onboarding a project, auditing coverage, adding monitoring, investigating failures, querying metrics, and changing configuration, plus a tool reference.
 
 ## Install
 

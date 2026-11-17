@@ -1,6 +1,6 @@
 ---
 name: cronitor
-description: Onboard a project, connect, audit, add, investigate, query, and change Cronitor monitoring for cron jobs, background workers, heartbeats, websites, APIs, and AI agent tool servers through the Cronitor connector, CronitorCLI, or the REST API. Use when a human mentions Cronitor, asks whether scheduled jobs or endpoints are monitored, wants alerts when a job fails or a site goes down, asks why a monitor is failing, wants failure counts or duration trends, or asks to change monitor, alert, status page, or environment configuration. Includes task recipes, a tool reference, CLI and REST equivalents, the monitor YAML format, and scripts that check the connection path and inventory scheduled work.
+description: Onboard a project, connect, audit, add, investigate, query, and change Cronitor monitoring for cron jobs, background workers, heartbeats, websites, APIs, and AI agent tool servers through the Cronitor connector, CronitorCLI, or the REST API. Use when a human mentions Cronitor, asks whether scheduled jobs or endpoints are monitored, wants alerts when a job fails or a site goes down, asks why a monitor is failing, wants failure counts or duration trends, or asks to change monitor, alert, status page, or environment configuration. Includes task recipes, a tool reference, CLI and REST equivalents, the monitor YAML format, and steps that check the connection path and inventory scheduled work.
 license: MIT
 metadata:
   version: "1.0.0"
@@ -53,7 +53,7 @@ Follow only the recipes the request needs. A specific instruction to implement a
 
 ## Connection triage
 
-Run `scripts/doctor.sh` first. It reports, without printing secrets, whether the `cronitor` CLI is installed and which organization it is signed in to, whether `CRONITOR_API_KEY` is set, whether https://cronitor.io/mcp is reachable, and which path to use. Then pick the first path that is available:
+Check the connection paths first, without printing secrets: whether the `cronitor` CLI is installed and which organization it is signed in to (`command -v cronitor && cronitor auth status`), whether `CRONITOR_API_KEY` is set (`[ -n "$CRONITOR_API_KEY" ] && echo set || echo unset`), and whether https://cronitor.io/mcp is reachable (`curl -s -o /dev/null -w '%{http_code}' https://cronitor.io/mcp`; a 401 means reachable). Then pick the first path that is available:
 
 1. **Already connected.** Cronitor MCP tools are present in the session: read their schemas and make one read-only call.
 2. **The client supports MCP** (Claude Code, Claude, Cursor, Codex, VS Code, other Streamable HTTP clients). Add `https://cronitor.io/mcp` with the client-specific steps at https://cronitor.io/docs/mcp-server.md#connect-your-mcp-client and let the human sign in or create an account in the same browser flow. Prefer this path: no key handling.
@@ -64,7 +64,7 @@ Never ask the human to paste an OAuth token, API key, or password into the conve
 
 ## Onboard a project
 
-A conversation: you find what can be monitored, the human decides, then you set it up. No writes before the human approves the proposal. Connect, then discover read-only: scheduled work (run `scripts/find-schedulers.sh`, and treat anything that runs on a schedule as a candidate even if the script does not know its system), workers, public URLs and health routes, a web frontend layout, and existing Cronitor usage; call `get_setup_context({})`, `get_status({})`, `list_notification_lists({})`, and `get_integration_services({})`. Report what you found and what you cannot see, then ask in one message with a default for each question: what to monitor, whether they run scheduled jobs outside this repository (always ask), uptime checks, web analytics, a status page, alert channels the plan allows, and environment and timezone. Propose one table, get one approval, act, then verify each resource or mark it `configured but unverified` with the remaining step.
+A conversation: you find what can be monitored, the human decides, then you set it up. No writes before the human approves the proposal. Connect, then discover read-only: scheduled work (crontabs from `crontab -l` and `/etc/cron.d`, `systemctl list-timers`, Kubernetes CronJob manifests, scheduled GitHub Actions, and in-code schedulers; treat anything that runs on a schedule as a candidate whatever system starts it), workers, public URLs and health routes, a web frontend layout, and existing Cronitor usage; call `get_setup_context({})`, `get_status({})`, `list_notification_lists({})`, and `get_integration_services({})`. Report what you found and what you cannot see, then ask in one message with a default for each question: what to monitor, whether they run scheduled jobs outside this repository (always ask), uptime checks, web analytics, a status page, alert channels the plan allows, and environment and timezone. Propose one table, get one approval, act, then verify each resource or mark it `configured but unverified` with the remaining step.
 
 Full recipe and the question template: `references/recipes.md#onboard-a-project`.
 
@@ -84,7 +84,7 @@ Done when a read-only call succeeds and the organization is unambiguous. Full re
 
 ## Audit monitoring
 
-Read-only unless the human separately asks you to implement recommendations. Run `scripts/find-schedulers.sh` to inventory crontabs, Kubernetes CronJobs, scheduled GitHub Actions, Celery beat, Sidekiq-cron, whenever, systemd timers, Laravel, Vercel and Cloudflare Workers crons, Serverless Framework, Render, Heroku Scheduler, Spring `@Scheduled`, Hangfire, Quartz, Go robfig/cron, and BullMQ, then match each boundary that actually runs against Cronitor with `search_monitors` and `get_monitor`. `export_monitors({})` returns every monitor as one YAML document (`references/monitor-yaml.md`). Report Covered, Gaps, Uncertain, and Recommended next change, each tied to evidence. A configured monitor is not coverage until the real runtime is seen sending telemetry.
+Read-only unless the human separately asks you to implement recommendations. Inventory crontabs, Kubernetes CronJobs, scheduled GitHub Actions, Celery beat, Sidekiq-cron, whenever, systemd timers, Laravel, Vercel and Cloudflare Workers crons, Serverless Framework, Render, Heroku Scheduler, Spring `@Scheduled`, Hangfire, Quartz, Go robfig/cron, and BullMQ, then match each boundary that actually runs against Cronitor with `search_monitors` and `get_monitor`. `export_monitors({})` returns every monitor as one YAML document (`references/monitor-yaml.md`). Report Covered, Gaps, Uncertain, and Recommended next change, each tied to evidence. A configured monitor is not coverage until the real runtime is seen sending telemetry.
 
 Full recipe: `references/recipes.md#audit-monitoring`.
 
@@ -134,5 +134,4 @@ Use `verified` only when Cronitor independently observed the failure-detection p
 - `references/mcp-tools.md`: every MCP tool, its purpose, and the API-key scope it needs.
 - `references/cli-equivalents.md`: task to MCP tool to CLI command to REST endpoint.
 - `references/monitor-yaml.md`: the YAML format `cronitor sync` and `export_monitors` use.
-- `scripts/doctor.sh`: connection-path check. `scripts/find-schedulers.sh`: scheduled-work inventory.
 - Docs index for agents: https://cronitor.io/llms.txt
