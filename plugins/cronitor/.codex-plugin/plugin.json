@@ -1,6 +1,6 @@
 {
   "name": "cronitor",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Monitor cron jobs, background workers, heartbeats, websites, and APIs with Cronitor, and route alerts, from ChatGPT and Codex.",
   "author": {
     "name": "Cronitor",
@@ -41,9 +41,9 @@
       "Open an incident on my status page"
     ],
     "brandColor": "#2E16B5",
-    "composerIcon": "./assets/icon.svg",
-    "logo": "./assets/icon.svg",
-    "logoDark": "./assets/icon-dark.svg"
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png",
+    "logoDark": "./assets/icon-dark.png"
   },
   "extensions": {
     "com.openai": {

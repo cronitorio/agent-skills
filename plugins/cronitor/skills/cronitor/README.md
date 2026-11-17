@@ -4,13 +4,7 @@ This folder is the source for the public [cronitorio/agent-skills](https://githu
 
 ## Install
 
-With the skills CLI, from any project:
-
-```bash
-npx skills add cronitorio/agent-skills
-```
-
-Claude Code and Codex users can install the Cronitor plugin instead. It adds this skill and Cronitor's hosted MCP server together. In Claude Code:
+This copy of the skill ships inside the Cronitor plugin, which also adds Cronitor's hosted MCP server. In Claude Code:
 
 ```bash
 claude plugin marketplace add cronitorio/agent-skills
@@ -24,9 +18,9 @@ codex plugin marketplace add cronitorio/agent-skills
 codex plugin add cronitor@cronitor
 ```
 
-The plugin lives in `plugins/cronitor` of the public repository, with its own copy of this skill. Keep plugin manifests out of this folder: Claude Code loads a skills folder that contains them as a plugin with no skills.
-
 Or copy this folder to `~/.claude/skills/cronitor` (user scope) or `<project>/.claude/skills/cronitor` (project scope).
+
+The plugin lives in `plugins/cronitor` of the public repository, with its own copy of this skill. Keep plugin manifests out of this folder: Claude Code loads a skills folder that contains them as a plugin with no skills.
 
 ## Layout
 

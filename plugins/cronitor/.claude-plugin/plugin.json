@@ -1,7 +1,7 @@
 {
   "name": "cronitor",
   "displayName": "Cronitor",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Monitor cron jobs, background workers, heartbeats, websites, and APIs with Cronitor, and route alerts.",
   "author": {
     "name": "Cronitor",
@@ -19,7 +19,7 @@
     "alerts",
     "status pages"
   ],
-  "icon": "./assets/icon.svg",
+  "icon": "./assets/icon.png",
   "documentationUrl": "https://cronitor.io/docs/agent-quickstart",
   "supportUrl": "https://cronitor.io/help",
   "privacyPolicyUrl": "https://cronitor.io/privacy",
