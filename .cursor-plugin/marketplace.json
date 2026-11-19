@@ -1,0 +1,18 @@
+{
+  "name": "cronitor",
+  "owner": {
+    "name": "Cronitor",
+    "email": "support@cronitor.io"
+  },
+  "metadata": {
+    "description": "Official Cronitor plugins for coding agents."
+  },
+  "plugins": [
+    {
+      "name": "cronitor",
+      "source": "./plugins/cronitor",
+      "version": "1.0.3",
+      "description": "Monitor cron jobs, background workers, heartbeats, websites, and APIs with Cronitor, and route alerts."
+    }
+  ]
+}
