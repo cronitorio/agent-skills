@@ -1,6 +1,6 @@
 {
   "name": "cronitor",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Monitor cron jobs, background workers, heartbeats, websites, and APIs with Cronitor, and route alerts, from ChatGPT and Codex.",
   "author": {
     "name": "Cronitor",
