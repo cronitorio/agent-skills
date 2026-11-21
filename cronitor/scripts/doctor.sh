@@ -15,11 +15,12 @@ mcp_http=""
 install_blocked=0
 step=1
 
-# Official CronitorCLI installation URL printed by print_cli_install.
-INSTALL_DOCS="https://cronitor.io/docs/using-cronitor-cli.md#installation"
+# Exact install commands. print_cli_install prints the one this host should run first.
+INSTALL_WITH_SUDO="curl -fsSL 'https://cronitor.io/install-linux?sudo=1' | sh"
+INSTALL_AS_ROOT="curl -fsSL 'https://cronitor.io/install-linux' | sh"
 
-# Installing to /usr/bin on Linux needs root or sudo. Without either, say so
-# and still point at the docs for macOS and other options.
+# Root runs the installer directly. A non-root user needs sudo. Without either,
+# do not print a command that will fail writing /usr/bin.
 print_cli_install() {
   install_uid=$(id -u 2>/dev/null || true)
   if [ "$install_uid" != "0" ] && ! command -v sudo >/dev/null 2>&1; then
@@ -31,12 +32,22 @@ print_cli_install() {
     else
       echo "   Report 'blocked' and ask the human to re-run as root or install sudo."
     fi
-    echo "   Installation instructions: $INSTALL_DOCS"
+    echo "   macOS and other options: https://cronitor.io/docs/using-cronitor-cli.md#installation"
     return
   fi
   install_blocked=0
-  echo "   Follow the official CronitorCLI installation instructions for this host:"
-  echo "   $INSTALL_DOCS"
+  if [ "$install_uid" = "0" ]; then
+    echo "   Run:"
+    echo "   $INSTALL_AS_ROOT"
+    echo "   When sudo is installed and you are not root:"
+    echo "   $INSTALL_WITH_SUDO"
+  else
+    echo "   Run:"
+    echo "   $INSTALL_WITH_SUDO"
+    echo "   When already root:"
+    echo "   $INSTALL_AS_ROOT"
+  fi
+  echo "   macOS and other options: https://cronitor.io/docs/using-cronitor-cli.md#installation"
 }
 
 echo "Cronitor connection doctor"

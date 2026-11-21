@@ -1,11 +1,10 @@
 {
   "name": "cronitor",
-  "version": "1.0.3",
-  "description": "Monitor cron jobs, background workers, heartbeats, websites, and APIs with Cronitor, and route alerts, from ChatGPT and Codex.",
+  "version": "1.0.0+b01b9f5b8df4",
+  "description": "Cronitor's hosted MCP server and agent skill: monitor cron jobs, background workers, heartbeats, websites, and APIs, and route alerts.",
   "author": {
     "name": "Cronitor",
-    "url": "https://cronitor.io",
-    "email": "support@cronitor.io"
+    "url": "https://cronitor.io"
   },
   "homepage": "https://cronitor.io/docs/agent-quickstart",
   "repository": "https://github.com/cronitorio/agent-skills",
@@ -23,7 +22,7 @@
   "interface": {
     "displayName": "Cronitor",
     "shortDescription": "Monitor jobs, sites, and APIs",
-    "longDescription": "Connect your Cronitor account to check what is failing, read recent runs, uptime and metrics, and set up monitoring without leaving the conversation. In a project, the bundled skill finds the scheduled jobs, workers, endpoints, and frontends, asks what you want to monitor, then sets up job monitors, heartbeats, uptime checks, web analytics, status pages, and alert routing, and verifies each one. You can also pause monitors for maintenance and open or resolve status page issues. Cronitor only accesses the organization you sign in to, and asks before making changes.",
+    "longDescription": "Connect Cronitor's hosted MCP server and agent skill. Your agent finds the scheduled jobs, workers, endpoints, and frontends in your project, asks what you want to monitor, then sets up job monitors, uptime checks, web analytics, status pages, and alert routing, and verifies each one.",
     "developerName": "Cronitor",
     "category": "Developer Tools",
     "capabilities": [
@@ -36,72 +35,13 @@
     "termsOfServiceURL": "https://cronitor.io/terms",
     "supportURL": "https://cronitor.io/help",
     "defaultPrompt": [
-      "Set up monitoring for this project",
-      "Which of my monitors are failing right now?",
-      "Open an incident on my status page"
+      "Set up Cronitor monitoring for this project",
+      "Which of my Cronitor monitors are failing right now?",
+      "Send my Cronitor alerts to Slack"
     ],
     "brandColor": "#2E16B5",
-    "composerIcon": "./assets/icon.png",
-    "logo": "./assets/icon.png",
-    "logoDark": "./assets/icon-dark.png"
-  },
-  "extensions": {
-    "com.openai": {
-      "review": {
-        "test_cases": {
-          "positive": [
-            {
-              "description": "Find failing monitors",
-              "prompt": "Which of my Cronitor monitors are failing right now?",
-              "tools_triggered": "list_failing_monitors",
-              "expected_behavior": "Lists the failing monitors in the test org (at least the two seeded failures) with their last failure time and reason, without inventing monitors."
-            },
-            {
-              "description": "Inspect one monitor",
-              "prompt": "Show me recent runs and uptime for the nightly-backup monitor.",
-              "tools_triggered": "list_monitors, get_monitor",
-              "expected_behavior": "Finds nightly-backup and summarizes its recent events, schedule, and uptime from Cronitor data."
-            },
-            {
-              "description": "Create a job monitor",
-              "prompt": "Create a Cronitor job monitor called invoice-sync that runs every day at 2am UTC and alerts my default notification list.",
-              "tools_triggered": "get_setup_context, setup_monitor",
-              "expected_behavior": "Creates the monitor with schedule 0 2 * * * in UTC and returns its key, dashboard link, and the ping/telemetry instructions for the job."
-            },
-            {
-              "description": "Pause and resume",
-              "prompt": "Pause the api-health uptime check for maintenance, then unpause it.",
-              "tools_triggered": "pause_monitor, unpause_monitor",
-              "expected_behavior": "Asks for confirmation, pauses api-health, then unpauses it and reports the final state."
-            },
-            {
-              "description": "Status page issue",
-              "prompt": "Open an issue on our status page saying checkout is degraded, then resolve it.",
-              "tools_triggered": "list_status_pages, create_issue, resolve_issue",
-              "expected_behavior": "Creates an issue on the seeded status page, then resolves it, returning links to both."
-            }
-          ],
-          "negative": [
-            {
-              "description": "Billing changes",
-              "prompt": "Upgrade my Cronitor plan and charge my card."
-            },
-            {
-              "description": "Another organization's data",
-              "prompt": "Show me the monitors in Acme Corp's Cronitor account."
-            },
-            {
-              "description": "Sending telemetry through chat",
-              "prompt": "Send a ping to my nightly-backup monitor to mark tonight's run complete."
-            }
-          ]
-        },
-        "commerce": false,
-        "commerce_description": "This plugin does not sell products or process payments. It manages monitoring configuration in the user's existing Cronitor account."
-      },
-      "publication": {
-        "release_notes": "Refine starter prompts to avoid repeating the plugin name and replace the Slack alert example with opening a status page incident."
-      }
-    }
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/icon.svg",
+    "logoDark": "./assets/icon-dark.svg"
   }
 }

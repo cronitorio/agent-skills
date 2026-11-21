@@ -1,10 +1,16 @@
 # Cronitor agent skill
 
-This folder is the source for the public [cronitorio/agent-skills](https://github.com/cronitorio/agent-skills) repository. It follows the [Agent Skills](https://agentskills.io) specification: `SKILL.md` carries the frontmatter and the routing that an agent reads first, `references/` holds the material it loads on demand.
+This folder is the source for the public [cronitorio/agent-skills](https://github.com/cronitorio/agent-skills) repository. It follows the [Agent Skills](https://agentskills.io) specification: `SKILL.md` carries the frontmatter and the routing that an agent reads first, `references/` holds the material it loads on demand, and `scripts/` holds helpers it can run.
 
 ## Install
 
-This copy of the skill ships inside the Cronitor plugin, which also adds Cronitor's hosted MCP server. In Claude Code:
+With the skills CLI, from any project:
+
+```bash
+npx skills add cronitorio/agent-skills
+```
+
+Claude Code and Codex users can install the Cronitor plugin instead. It adds this skill and Cronitor's hosted MCP server together. In Claude Code:
 
 ```bash
 claude plugin marketplace add cronitorio/agent-skills
@@ -18,9 +24,9 @@ codex plugin marketplace add cronitorio/agent-skills
 codex plugin add cronitor@cronitor
 ```
 
-Or copy this folder to `~/.claude/skills/cronitor` (user scope) or `<project>/.claude/skills/cronitor` (project scope).
-
 The plugin lives in `plugins/cronitor` of the public repository, with its own copy of this skill. Keep plugin manifests out of this folder: Claude Code loads a skills folder that contains them as a plugin with no skills.
+
+Or copy this folder to `~/.claude/skills/cronitor` (user scope) or `<project>/.claude/skills/cronitor` (project scope).
 
 ## Layout
 
@@ -31,6 +37,8 @@ The plugin lives in `plugins/cronitor` of the public repository, with its own co
 | `references/mcp-tools.md` | Every hosted MCP tool with its purpose and API-key scope, generated from the server's tool registry |
 | `references/cli-equivalents.md` | Task to MCP tool to CronitorCLI command to REST endpoint |
 | `references/monitor-yaml.md` | The YAML document format shared by `cronitor sync`, `export_monitors`, and the Monitors API |
+| `scripts/doctor.sh` | Reports which connection path (MCP, CLI, API key) is available without printing secrets |
+| `scripts/find-schedulers.sh` | Read-only inventory of crontabs, Kubernetes CronJobs, scheduled GitHub Actions, Celery beat, Sidekiq-cron, whenever, and systemd timers |
 
 ## Keeping it current
 
